@@ -11,7 +11,7 @@ namespace Jing.ULiteWebView
     /// </summary>
     public class ULiteWebView : MonoBehaviour
     {
-        private static ULiteWebView _ins;
+        private static ULiteWebView _ins = null;
         public static ULiteWebView Ins
         {
             get
@@ -19,15 +19,13 @@ namespace Jing.ULiteWebView
                 if (null == _ins)
                 {
                     _ins = GameObject.FindObjectOfType<ULiteWebView>();
-
                     if (null == _ins)
                     {
                         var go = new GameObject();
                         go.name = typeof(ULiteWebView).Name;
                         _ins = go.AddComponent<ULiteWebView>();
-                        _ins.Init();
                     }
-                    
+                    _ins.Init();
                     DontDestroyOnLoad(_ins.gameObject);
                 }
                 return _ins;
@@ -58,6 +56,9 @@ namespace Jing.ULiteWebView
         /// </summary>
         public event Action<string> onLoadingUrl;
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
         void Init()
         {
             if (null == _ulite)
@@ -278,6 +279,7 @@ namespace Jing.ULiteWebView
 
     }
 
+#if UNITY_ANDROID
     class ULiteAndroidWebView : AULite4Platform
     {
         AndroidJavaObject _ajo;
@@ -312,7 +314,9 @@ namespace Jing.ULiteWebView
             _ajo.Call("show", top, bottom, left, right);
         }
     }
+#endif
 
+#if UNITY_IOS
     class ULiteIosWebView : AULite4Platform
     {
         [DllImport("__Internal")]
@@ -356,4 +360,5 @@ namespace Jing.ULiteWebView
             _show(top, bottom, left, right);
         }
     }
+#endif
 }
